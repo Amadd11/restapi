@@ -26,7 +26,7 @@ app.post("/api/students", (req, res) => {
   }
 
   const newStudent = {
-    id: Date.now(),
+    id: students.length + 1,
     nama,
     nis,
     email: email || null,
@@ -93,5 +93,9 @@ app.delete("/api/students/:id", (req, res) => {
   });
 });
 
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`✅ Server running on port ${port}`);
+});
 
 module.exports = app;
