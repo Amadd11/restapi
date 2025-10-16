@@ -35,6 +35,9 @@ app.delete("/api/students/:id", (req, res) => {
   res.json({ message: "Data deleted" });
 });
 
+const port = process.env.PORT || 3000;
+app.listen(port, "0.0.0.0", () => {
+  console.log(`Server running on port ${port}`);
+});
 
-// ✅ Ganti dengan ini:
 module.exports = app;
