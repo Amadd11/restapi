@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Students API - Daftar Siswa</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 5px solid #007bff;
+        }
+
+        input {
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        }
+
+        button {
+            grid-column: 1 / -1;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        th,
+        td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        th {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        tr:hover {
+            background: #e3f2fd;
+            transition: background 0.2s;
+        }
+
+        .actions button {
+            background: linear-gradient(135deg, #28a745, #1e7e34);
+            margin-right: 8px;
+            padding: 6px 12px;
+            font-size: 14px;
+            border-radius: 4px;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+
+        .actions button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
+        }
+
+        .delete-btn {
+            background: linear-gradient(135deg, #dc3545, #c82333) !important;
+        }
+
+        .delete-btn:hover {
+            box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3) !important;
+        }
+
+        .error {
+            color: #dc3545;
+            background: #f8d7da;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+            border-left: 4px solid #dc3545;
+        }
+
+        .success {
+            color: #155724;
+            background: #d4edda;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+            border-left: 4px solid #28a745;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #6c757d;
+        }
+
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #007bff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #6c757d;
+            font-size: 14px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .github-link {
+            display: inline-block;
+            background: #24292e;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .github-link:hover {
+            background: #1a1a1a;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            table {
+                font-size: 14px;
+            }
+
+            th,
+            td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Daftar Siswa</h1>
+    <div id="message"></div>
+
+    <div class="container">
+        <form id="addForm">
+            <h3 style="grid-column: 1 / -1; margin-top: 0; color: #2c3e50;">Tambah Siswa Baru</h3>
+            <input type="text" id="nama" placeholder="Nama Lengkap" required>
+            <input type="text" id="nis" placeholder="Nomor Induk Siswa (NIS)" required>
+            <input type="email" id="email" placeholder="Email (opsional)">
+            <input type="text" id="kelas" placeholder="Kelas (misal: 10 IPA 1)">
+            <input type="number" id="umur" placeholder="Umur (opsional)" min="10" max="25">
+            <button type="submit">Tambah Siswa</button>
+        </form>
+    </div>
+
+    <div class="container">
+        <div id="loading" class="loading" style="display: none;">Loading data...</div>
+        <table id="studentsTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nama</th>
+                    <th>NIS</th>
+                    <th>Email</th>
+                    <th>Kelas</th>
+                    <th>Umur</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="studentsBody"></tbody>
+        </table>
+    </div>
+
+    <footer>
+        <p>
+            Students API - Dibuat dengan Node.js + Express | Data disimpan di file JSON
+        </p>
+        <p>
+            Endpoint API:
+            <a href="/api/students" target="_blank">
+                /api/students
+            </a>
+        </p>
+        <a href="https://github.com/Amadd11/restapi" class="github-link" target="_blank">
+            Source Code di GitHub
+        </a>
+    </footer>
+
+
+    <script>
+        const API_BASE = '/api';
+        const messageEl = document.getElementById('message');
+        const tableBody = document.getElementById('studentsBody');
+        const addForm = document.getElementById('addForm');
+        const loadingEl = document.getElementById('loading');
+
+        // Fungsi tampilkan pesan
+        function showMessage(msg, isError = false) {
+            messageEl.innerHTML = `<div class="${isError ? 'error' : 'success'}">${msg}</div>`;
+            setTimeout(() => messageEl.innerHTML = '', 3000);
+        }
+
+        // Load dan tampilkan daftar siswa
+        async function loadStudents() {
+            loadingEl.style.display = 'block';
+            tableBody.innerHTML = '';
+            try {
+                const res = await fetch(`${API_BASE}/students`);
+                const { data } = await res.json();
+                data.forEach(student => {
+                    const row = tableBody.insertRow();
+                    row.innerHTML = `
+            <td>${student.id}</td>
+            <td>${student.nama}</td>
+            <td>${student.nis}</td>
+            <td>${student.email || '-'}</td>
+            <td>${student.kelas || '-'}</td>
+            <td>${student.umur || '-'}</td>
+            <td class="actions">
+              <button onclick="editStudent(${student.id})">Edit</button>
+              <button class="delete-btn" onclick="deleteStudent(${student.id})">Hapus</button>
+            </td>
+          `;
+                });
+            } catch (err) {
+                showMessage('Error loading data', true);
+            } finally {
+                loadingEl.style.display = 'none';
+            }
+        }
+
+        // Tambah siswa
+        addForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = {
+                nama: document.getElementById('nama').value,
+                nis: document.getElementById('nis').value,
+                email: document.getElementById('email').value,
+                kelas: document.getElementById('kelas').value,
+                umur: parseInt(document.getElementById('umur').value) || null
+            };
+            try {
+                const res = await fetch(`${API_BASE}/students`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+                if (res.ok) {
+                    showMessage('Siswa berhasil ditambahkan!');
+                    addForm.reset();
+                    loadStudents();
+                } else {
+                    const { error } = await res.json();
+                    showMessage(error, true);
+                }
+            } catch (err) {
+                showMessage('Error menambah data', true);
+            }
+        });
+
+        // Edit siswa (prompt sederhana)
+        function editStudent(id) {
+            const nama = prompt('Nama baru:');
+            if (nama) {
+                fetch(`${API_BASE}/students/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nama })
+                }).then(() => {
+                    showMessage('Siswa berhasil diupdate!');
+                    loadStudents();
+                }).catch(() => showMessage('Error update', true));
+            }
+        }
+
+        // Hapus siswa
+        function deleteStudent(id) {
+            if (confirm('Yakin hapus siswa ini?')) {
+                fetch(`${API_BASE}/students/${id}`, { method: 'DELETE' })
+                    .then(() => {
+                        showMessage('Siswa berhasil dihapus!');
+                        loadStudents();
+                    }).catch(() => showMessage('Error hapus', true));
+            }
+        }
+
+        // Load awal
+        loadStudents();
+    </script>
+</body>
+
+</html>
